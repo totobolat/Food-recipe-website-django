@@ -58,6 +58,8 @@ class Resipi(models.Model):
     slug = models.SlugField()
     last_update = models.DateTimeField(auto_now=True)
     chef = models.ForeignKey(Chef, on_delete=models.PROTECT)
+    number_of_rating = models.IntegerField(default=0)
+    avg_rating = models.FloatField(default=0)
 
     def __str__(self) -> str:
         return self.title

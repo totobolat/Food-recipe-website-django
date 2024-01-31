@@ -25,7 +25,11 @@ class ResipiSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resipi
         fields = ['id', 'title', 'description', 'slug', 'ingredients',
-         'how_to', 'category', 'images']
+         'how_to', 'category', 'avg_rating', 'images']
+    # def calculateAvg(self, ):
+    #     Resipi.objects.filter(id=collection.id).aggregate(Count('product'))
+    #     return 
+    # avg_rating = serializers.SerializerMethodField(method_name='calculateAvg')
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,3 +47,13 @@ class ChefSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chef
         fields = ['id', 'user_id', 'phone', 'birth_date', 'membership']
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ResipiRating
+        fields = ['stars']
+    
+    def create(self, validated_data):
+        resipi_id = self.context['resipi_id']
+        validated_data['resipi_id'] = resipi_id
+        return Review.objects.create(**validated_data)

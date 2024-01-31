@@ -7,7 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.viewsets import ModelViewSet ,GenericViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework import generics
 from rest_framework.mixins import UpdateModelMixin, CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
 from .serializers import CategorySerializer, ResipiImageSerializer, ResipiSerializer, ReviewSerializer, ChefSerializer
 from .models import Resipi, Category, Chef, ResipiImage, ResipiRating, Review
@@ -43,3 +44,23 @@ class CategoryViewSet(ModelViewSet):
             return Response({'error': 'cant delete'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         return super().destroy(request, *args, **kwargs)
 
+class ChefViewSet(generics.RetrieveAPIView, generics.ListAPIView, GenericViewSet):
+    # def get_queryset(self):
+    #     return Chef.objects.filter(id=self.kwargs['pk'])
+    queryset = Chef.objects.all()
+
+    serializer_class = ChefSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    search_fields = ['user_id']
+
+
+class ReviewViewSet(ModelViewSet):    
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        return Review.objects.filter(product_id=self.kwargs['product_pk_pk'])
+
+    def get_serializer_context(self):
+        context = super(ReviewViewSet, self).get_serializer_context()
+        context.update({'product_id': self.kwargs['product_pk_pk']})
+        return context
