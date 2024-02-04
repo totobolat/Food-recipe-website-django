@@ -8,9 +8,7 @@ from . import models
 @admin.register(models.Resipi)
 class ResipiAdmin(admin.ModelAdmin):
     autocomplete_fields = ['category']
-    prepopulated_fields = {
-        'slug': ['title']
-    }
+    prepopulated_fields = {'slug': ('title',)}
     #actions = ['clear_inventory']
     #inlines = [ProductImageInline]
     list_display = ['title', 'category_title']
@@ -47,6 +45,7 @@ class CategoryAdmin(admin.ModelAdmin):
     #autocomplete_fields = ['title']
     list_display = ['title', 'resipis_count']
     search_fields = ['title']
+    prepopulated_fields = {'slug': ('title',)}
 
     @admin.display(ordering='resipis_count')
     def resipis_count(self, category):
@@ -65,7 +64,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Chef)
-class ChefrAdmin(admin.ModelAdmin):
+class ChefAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name',  'membership']
     list_editable = ['membership']
     list_per_page = 10

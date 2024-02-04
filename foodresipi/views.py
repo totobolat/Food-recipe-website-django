@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import generics
 from rest_framework.mixins import UpdateModelMixin, CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
-from .serializers import CategorySerializer, ResipiImageSerializer, ResipiSerializer, ReviewSerializer, ChefSerializer
+from .serializers import CategorySerializer, ResipiImageSerializer, ResipiSerializer, ReviewSerializer, ChefSerializer, CategoryResipiSerializer
 from .models import Resipi, Category, Chef, ResipiImage, ResipiRating, Review
 #from store.pagination import DefaultPagination
 from django.db.models.aggregates import Count, Avg
@@ -33,16 +33,35 @@ class ResipiViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 class CategoryViewSet(ModelViewSet):
-    queryset = Category.objects.annotate(resipi_count=Count('resipis'))
+    queryset = Category.objects.annotate(resipis_count=Count('resipis'))
     serializer_class = CategorySerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     search_fields = ['title']
-    ordering_fields = ['id', 'last_update']
+    ordering_fields = ['id', 'title', 'resipis_count']
+
+    # def retrieve(self, request, *args, **kwargs):
+    #     if Resipi.objects.filter(category_id=kwargs['pk']):
+    #         queryset = Resipi.objects.filter(category_id=kwargs['pk']).all()
+    #         return Response(status=status.HTTP_200_OK, data=queryset)
 
     def destroy(self, request, *args, **kwargs):
         if Resipi.objects.filter(category_id=kwargs['pk']):
             return Response({'error': 'cant delete'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         return super().destroy(request, *args, **kwargs)
+
+class CategoryResipiViewSet(generics.ListAPIView):
+    def get_queryset(self):
+        print(self.kwargs)
+        return Resipi.objects.filter(category__slug=self.kwargs['slug'])
+    lookup_field = ['slug']
+    serializer_class = CategoryResipiSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    search_fields = ['title']
+    ordering_fields = ['id', 'title', 'resipis_count']
+
+    def get_serializer_context(self):
+        return {'category__slug': self.kwargs['slug']}
+
 
 class ChefViewSet(generics.RetrieveAPIView, generics.ListAPIView, GenericViewSet):
     # def get_queryset(self):
