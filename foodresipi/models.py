@@ -10,7 +10,7 @@ class Category(models.Model):
         ordering = ['title']
 
     title = models.CharField(max_length=55)
-    slug = models.SlugField(default='', null=False)
+    slug = models.SlugField(default='', null=False, unique=True)
     
     def __str__(self) -> str:
         return self.title

@@ -45,9 +45,9 @@ class CategoryResipiSerializer(serializers.ModelSerializer):
         model = Resipi
         fields = ['id', 'title', 'category', 'avg_rating', 'images']
 
-    def create(self, validated_data):
-        category_slug = self.context['resipis_slug']
-        return Resipi.objects.create(category_slug=category_slug, **validated_data)
+    # def create(self, validated_data):
+    #     category_slug = self.context['resipis_slug']
+    #     return Resipi.objects.create(category_slug=category_slug, **validated_data)
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:

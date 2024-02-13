@@ -12,6 +12,8 @@ markdown = "*"
 django-filter = "*"
 pillow = "*"
 drf-nested-routers = "*"
+djoser = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 

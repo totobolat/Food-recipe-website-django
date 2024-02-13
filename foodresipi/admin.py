@@ -65,6 +65,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.Chef)
 class ChefAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['user']
     list_display = ['first_name', 'last_name',  'membership']
     list_editable = ['membership']
     list_per_page = 10

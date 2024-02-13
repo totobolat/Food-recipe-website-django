@@ -51,7 +51,6 @@ class CategoryViewSet(ModelViewSet):
 
 class CategoryResipiViewSet(generics.ListAPIView):
     def get_queryset(self):
-        print(self.kwargs)
         return Resipi.objects.filter(category__slug=self.kwargs['slug'])
     lookup_field = ['slug']
     serializer_class = CategoryResipiSerializer
@@ -59,8 +58,8 @@ class CategoryResipiViewSet(generics.ListAPIView):
     search_fields = ['title']
     ordering_fields = ['id', 'title', 'resipis_count']
 
-    def get_serializer_context(self):
-        return {'category__slug': self.kwargs['slug']}
+    # def get_serializer_context(self):
+    #     return {'category__slug': self.kwargs['slug']}
 
 
 class ChefViewSet(generics.RetrieveAPIView, generics.ListAPIView, GenericViewSet):
